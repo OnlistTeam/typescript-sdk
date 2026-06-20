@@ -1,4 +1,4 @@
-import { Onlist } from "onlist";
+import { Onlist } from "@onlist/sdk";
 
 const client = new Onlist();
 

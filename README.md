@@ -5,13 +5,13 @@ The official JavaScript/TypeScript SDK for [Onlist](https://onlist.io), the AI A
 ## Installation
 
 ```bash
-npm install onlist
+npm install @onlist/sdk
 ```
 
 ## Quick Start
 
 ```typescript
-import { Onlist } from "onlist";
+import { Onlist } from "@onlist/sdk";
 
 const client = new Onlist({ apiKey: "sk-..." });
 
@@ -125,7 +125,7 @@ OpenAI-compatible calls (`chat.completions`, `embeddings`, etc.) throw standard 
 
 ```typescript
 import OpenAI from "openai";
-import { AuthenticationError } from "onlist";
+import { AuthenticationError } from "@onlist/sdk";
 
 // OpenAI-compatible endpoints throw openai errors
 try {
@@ -152,7 +152,7 @@ Replace the `openai` import with `onlist`:
 
 ```diff
 - import OpenAI from "openai";
-+ import { Onlist } from "onlist";
++ import { Onlist } from "@onlist/sdk";
 
 - const client = new OpenAI({ apiKey: "sk-..." });
 + const client = new Onlist({ apiKey: "sk-..." });
@@ -168,7 +168,7 @@ const response = await client.chat.completions.create({
 
 ```diff
 - import OpenAI from "openai";
-+ import { Onlist } from "onlist";
++ import { Onlist } from "@onlist/sdk";
 
 - const client = new OpenAI({
 -   baseURL: "https://openrouter.ai/api/v1",
@@ -188,7 +188,7 @@ const response = await client.chat.completions.create({
 The SDK is written in TypeScript and ships with full type definitions. All marketplace response types are exported:
 
 ```typescript
-import type { Model, Provider, ProviderRouting } from "onlist";
+import type { Model, Provider, ProviderRouting } from "@onlist/sdk";
 ```
 
 ## Links
