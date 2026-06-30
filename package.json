@@ -25,10 +25,10 @@
   "homepage": "https://onlist.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OnlistTeam/onlist-js.git"
+    "url": "https://github.com/OnlistTeam/typescript-sdk.git"
   },
   "bugs": {
-    "url": "https://github.com/OnlistTeam/onlist-js/issues"
+    "url": "https://github.com/OnlistTeam/typescript-sdk/issues"
   },
   "license": "MIT",
   "author": "Onlist <dev@onlist.io>",

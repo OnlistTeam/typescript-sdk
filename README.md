@@ -198,7 +198,7 @@ import type { Model, Provider, ProviderRouting } from "@onlist/sdk";
 - [Model Catalog](https://onlist.io/models)
 - [Provider Directory](https://onlist.io/providers)
 - [API Reference](https://onlist.io/docs/api)
-- [GitHub](https://github.com/OnlistTeam/onlist-js)
+- [GitHub](https://github.com/OnlistTeam/typescript-sdk)
 - [Python SDK](https://pypi.org/project/onlist/)
 
 ## License
