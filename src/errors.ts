@@ -1,3 +1,4 @@
+/** Base error class for all Onlist SDK errors. */
 export class OnlistError extends Error {
   constructor(message: string) {
     super(message);
@@ -5,6 +6,7 @@ export class OnlistError extends Error {
   }
 }
 
+/** Error thrown when an API request fails. */
 export class APIError extends OnlistError {
   readonly status: number;
   readonly type: string | null;
@@ -32,6 +34,7 @@ export class APIError extends OnlistError {
   }
 }
 
+/** Error thrown when the API key is invalid or missing. */
 export class AuthenticationError extends APIError {
   constructor(message = "Invalid API key", opts?: Partial<ConstructorParameters<typeof APIError>[1]>) {
     super(message, { status: 401, ...opts });
@@ -39,6 +42,7 @@ export class AuthenticationError extends APIError {
   }
 }
 
+/** Error thrown when the account balance is insufficient. */
 export class InsufficientBalanceError extends APIError {
   constructor(message = "Insufficient balance", opts?: Partial<ConstructorParameters<typeof APIError>[1]>) {
     super(message, { status: 402, ...opts });
@@ -46,6 +50,7 @@ export class InsufficientBalanceError extends APIError {
   }
 }
 
+/** Error thrown when the request is rate-limited. */
 export class RateLimitError extends APIError {
   constructor(message = "Rate limited", opts?: Partial<ConstructorParameters<typeof APIError>[1]>) {
     super(message, { status: 429, ...opts });
@@ -53,10 +58,19 @@ export class RateLimitError extends APIError {
   }
 }
 
+/** Error thrown when no matching provider is available. */
 export class ProviderError extends APIError {
   constructor(message: string, opts: ConstructorParameters<typeof APIError>[1]) {
     super(message, opts);
     this.name = "ProviderError";
+  }
+}
+
+/** Error thrown when a requested resource is not found. */
+export class NotFoundError extends APIError {
+  constructor(message = "Not found", opts?: Partial<ConstructorParameters<typeof APIError>[1]>) {
+    super(message, { status: 404, ...opts });
+    this.name = "NotFoundError";
   }
 }
 
@@ -77,6 +91,7 @@ export function raiseForStatus(status: number, body: unknown): never {
 
   if (status === 401) throw new AuthenticationError(message, opts);
   if (status === 402) throw new InsufficientBalanceError(message, opts);
+  if (status === 404) throw new NotFoundError(message, opts);
   if (status === 429) throw new RateLimitError(message, opts);
   if (code && code.startsWith("no_provider")) throw new ProviderError(message, opts);
 

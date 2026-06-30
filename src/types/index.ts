@@ -1,3 +1,5 @@
+import "./openai-augment.js";
+
 export type {
   Pricing,
   Architecture,
@@ -15,3 +17,13 @@ export type {
 } from "./provider.js";
 
 export type { MaxPrice, ProviderRouting } from "./routing.js";
+
+export type {
+  ModelRanking,
+  ModelSeriesPoint,
+  ModelRankingsResponse,
+  ModelRankingsParams,
+  AppRanking,
+  AppRankingsResponse,
+  AppRankingsParams,
+} from "./rankings.js";

@@ -35,8 +35,12 @@ The SDK looks for API keys in this order:
 // Explicit key
 const client = new Onlist({ apiKey: "sk-..." });
 
-// From environment variable
+// From ONLIST_API_KEY
 // export ONLIST_API_KEY=sk-...
+const client = new Onlist();
+
+// Falls back to OPENAI_API_KEY if ONLIST_API_KEY is not set
+// export OPENAI_API_KEY=sk-...
 const client = new Onlist();
 ```
 
@@ -49,7 +53,6 @@ Route requests to specific providers on the Onlist marketplace:
 const response = await client.chat.completions.create({
   model: "anthropic/claude-sonnet-4",
   messages: [{ role: "user", content: "Hello!" }],
-  // @ts-expect-error -- extra body fields
   provider: { only: ["alice-shop"] },
 });
 
@@ -57,7 +60,6 @@ const response = await client.chat.completions.create({
 const response = await client.chat.completions.create({
   model: "openai/gpt-4o",
   messages: [{ role: "user", content: "Hello!" }],
-  // @ts-expect-error
   provider: { sort: "price" },
 });
 
@@ -65,7 +67,6 @@ const response = await client.chat.completions.create({
 const response = await client.chat.completions.create({
   model: "openai/gpt-4o",
   messages: [{ role: "user", content: "Hello!" }],
-  // @ts-expect-error
   provider: {
     order: ["alice-shop", "bob-ai"],
     allow_fallbacks: true,
@@ -119,13 +120,44 @@ for (const provider of providers.items) {
 const profile = await client.marketplace.providers.get("alice-shop");
 ```
 
+## Rankings API
+
+Access model and app usage rankings:
+
+```typescript
+// Model usage leaderboard
+const rankings = await client.marketplace.rankings.models({
+  sort: "popular",
+  window: "week",
+});
+for (const entry of rankings.leaderboard) {
+  console.log(`#${entry.rank} ${entry.model_name} (${entry.total_requests} requests)`);
+}
+
+// Trending models
+const trending = await client.marketplace.rankings.models({
+  sort: "trending",
+  window: "month",
+});
+
+// App rankings
+const apps = await client.marketplace.rankings.apps({
+  sort: "popular",
+  window: "month",
+  limit: 10,
+});
+for (const app of apps.apps) {
+  console.log(`#${app.rank} ${app.title} (${app.domain})`);
+}
+```
+
 ## Error Handling
 
 OpenAI-compatible calls (`chat.completions`, `embeddings`, etc.) throw standard `openai` errors. Marketplace calls throw `onlist` errors:
 
 ```typescript
 import OpenAI from "openai";
-import { AuthenticationError } from "@onlist/sdk";
+import { AuthenticationError, NotFoundError } from "@onlist/sdk";
 
 // OpenAI-compatible endpoints throw openai errors
 try {
@@ -138,12 +170,26 @@ try {
 
 // Marketplace endpoints throw onlist errors
 try {
-  await client.marketplace.models.list();
+  await client.marketplace.models.get("nonexistent/model");
 } catch (e) {
+  if (e instanceof NotFoundError) {
+    console.log("Model not found");
+  }
   if (e instanceof AuthenticationError) {
     console.log("Invalid API key for marketplace");
   }
 }
+```
+
+## Retry Configuration
+
+Marketplace API calls automatically retry on transient failures (408, 429, 5xx) with exponential backoff:
+
+```typescript
+const client = new Onlist({
+  apiKey: "sk-...",
+  maxRetries: 3, // default: 2
+});
 ```
 
 ## Migration from OpenAI
@@ -188,7 +234,13 @@ const response = await client.chat.completions.create({
 The SDK is written in TypeScript and ships with full type definitions. All marketplace response types are exported:
 
 ```typescript
-import type { Model, Provider, ProviderRouting } from "@onlist/sdk";
+import type {
+  Model,
+  Provider,
+  ProviderRouting,
+  ModelRankingsResponse,
+  AppRankingsResponse,
+} from "@onlist/sdk";
 ```
 
 ## Links

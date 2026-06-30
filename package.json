@@ -1,6 +1,6 @@
 {
   "name": "@onlist/sdk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Official JavaScript/TypeScript SDK for Onlist, the AI API marketplace. Access 200+ AI models (GPT, Claude, Gemini, DeepSeek, Llama) through a unified OpenAI-compatible API with provider routing, marketplace data, and competitive pricing.",
   "keywords": [
     "onlist",

@@ -1,7 +1,7 @@
 export { Onlist } from "./client.js";
 export type { OnlistOptions } from "./client.js";
 
-export { Marketplace, MarketplaceModels, MarketplaceProviders } from "./marketplace.js";
+export { Marketplace, MarketplaceModels, MarketplaceProviders, MarketplaceRankings } from "./marketplace.js";
 export type { MarketplaceOptions } from "./marketplace.js";
 
 export {
@@ -9,6 +9,7 @@ export {
   APIError,
   AuthenticationError,
   InsufficientBalanceError,
+  NotFoundError,
   RateLimitError,
   ProviderError,
 } from "./errors.js";
@@ -26,6 +27,13 @@ export type {
   ProviderListResponse,
   MaxPrice,
   ProviderRouting,
+  ModelRanking,
+  ModelSeriesPoint,
+  ModelRankingsResponse,
+  ModelRankingsParams,
+  AppRanking,
+  AppRankingsResponse,
+  AppRankingsParams,
 } from "./types/index.js";
 
 export { VERSION } from "./version.js";
