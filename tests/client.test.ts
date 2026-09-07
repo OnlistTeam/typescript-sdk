@@ -26,6 +26,15 @@ describe("Onlist client", () => {
     expect(client.marketplace.rankings).toBeDefined();
   });
 
+  it("has the account namespaces", () => {
+    const client = new Onlist({ apiKey: "sk-test" });
+    expect(client.credits).toBeDefined();
+    expect(client.generations).toBeDefined();
+    expect(client.apiKeys).toBeDefined();
+    expect(client.activity).toBeDefined();
+    expect(client.oauth).toBeDefined();
+  });
+
   it("inherits chat completions", () => {
     const client = new Onlist({ apiKey: "sk-test" });
     expect(client.chat).toBeDefined();

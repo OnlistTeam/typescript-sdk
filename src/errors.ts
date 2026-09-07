@@ -74,6 +74,31 @@ export class NotFoundError extends APIError {
   }
 }
 
+/** Error thrown when the request is malformed or its parameters are rejected. */
+export class BadRequestError extends APIError {
+  constructor(message = "Bad request", opts?: Partial<ConstructorParameters<typeof APIError>[1]>) {
+    super(message, { status: 400, ...opts });
+    this.name = "BadRequestError";
+  }
+}
+
+/**
+ * Error thrown when the credential is valid but not allowed here.
+ *
+ * Most commonly: an inference key (`sk-...`) was used on an endpoint that
+ * only accepts a management key (`mgmt_...`). The server's message is passed
+ * through unchanged.
+ */
+export class PermissionDeniedError extends APIError {
+  constructor(
+    message = "Permission denied",
+    opts?: Partial<ConstructorParameters<typeof APIError>[1]>,
+  ) {
+    super(message, { status: 403, ...opts });
+    this.name = "PermissionDeniedError";
+  }
+}
+
 export function raiseForStatus(status: number, body: unknown): never {
   let error: Record<string, unknown> = {};
   if (body && typeof body === "object" && "error" in body) {
@@ -85,12 +110,16 @@ export function raiseForStatus(status: number, body: unknown): never {
 
   const message = (typeof error.message === "string" ? error.message : String(body)) || "Unknown error";
   const type = typeof error.type === "string" ? error.type : null;
+  // The account face sends `code` as the HTTP status (an int), the
+  // marketplace as a string slug. Only strings survive to `code`.
   const code = typeof error.code === "string" ? error.code : null;
   const param = typeof error.param === "string" ? error.param : null;
   const opts = { status, type, code, param, body };
 
+  if (status === 400) throw new BadRequestError(message, opts);
   if (status === 401) throw new AuthenticationError(message, opts);
   if (status === 402) throw new InsufficientBalanceError(message, opts);
+  if (status === 403) throw new PermissionDeniedError(message, opts);
   if (status === 404) throw new NotFoundError(message, opts);
   if (status === 429) throw new RateLimitError(message, opts);
   if (code && code.startsWith("no_provider")) throw new ProviderError(message, opts);
