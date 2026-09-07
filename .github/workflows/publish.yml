@@ -38,6 +38,8 @@ jobs:
         with:
           node-version: "22"
           registry-url: "https://registry.npmjs.org"
-      - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # npm trusted publishing (OIDC) needs npm >= 11.5.1; Node 22 bundles an older npm.
+      - run: npm install -g npm@latest
+      # dist/ was built and tested in the build job and there is no node_modules here,
+      # so prepublishOnly (tsup) must not run again.
+      - run: npm publish --provenance --access public --ignore-scripts

@@ -25,7 +25,7 @@
   "homepage": "https://onlist.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OnlistTeam/typescript-sdk.git"
+    "url": "git+https://github.com/OnlistTeam/typescript-sdk.git"
   },
   "bugs": {
     "url": "https://github.com/OnlistTeam/typescript-sdk/issues"
