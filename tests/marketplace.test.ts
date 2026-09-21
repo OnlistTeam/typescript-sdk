@@ -108,6 +108,38 @@ describe("Marketplace", () => {
     });
   });
 
+  describe("models.listForUser", () => {
+    it("fetches the key-scoped catalog and sends the key", async () => {
+      const mockUserModels = {
+        object: "list",
+        data: [{ id: "openai/gpt-4o", name: "GPT-4o", context_length: 128000 }],
+      };
+      fetchSpy.mockResolvedValueOnce(new Response(JSON.stringify(mockUserModels), { status: 200 }));
+      const result = await marketplace.models.listForUser();
+      expect(result.object).toBe("list");
+      expect(result.data).toHaveLength(1);
+      expect(result.data[0].id).toBe("openai/gpt-4o");
+
+      const [url, init] = fetchSpy.mock.calls[0];
+      expect(url).toBe("https://onlist.io/api/v1/models/user");
+      expect((init.headers as Record<string, string>).Authorization).toBe("Bearer sk-test");
+    });
+
+    it("returns an empty list when the key can call nothing", async () => {
+      fetchSpy.mockResolvedValueOnce(
+        new Response(JSON.stringify({ object: "list", data: [] }), { status: 200 }),
+      );
+      const result = await marketplace.models.listForUser();
+      expect(result.data).toEqual([]);
+    });
+
+    it("throws AuthenticationError on 401", async () => {
+      const errorBody = { error: { message: "Invalid key", type: "auth_error", code: "invalid_api_key" } };
+      fetchSpy.mockResolvedValueOnce(new Response(JSON.stringify(errorBody), { status: 401 }));
+      await expect(marketplace.models.listForUser()).rejects.toThrow(AuthenticationError);
+    });
+  });
+
   describe("providers.list", () => {
     it("fetches providers", async () => {
       fetchSpy.mockResolvedValueOnce(new Response(JSON.stringify(mockProvidersResponse), { status: 200 }));

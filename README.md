@@ -129,6 +129,18 @@ for (const provider of providers.items) {
 const profile = await client.marketplace.providers.get("alice-shop");
 ```
 
+Listing only what your key can call — `GET /v1/models/user`, the authenticated sibling of
+`client.models.list()`. Handy for a model picker: the key's model access list and its
+routing-policy allow/deny of providers are applied server-side, so nothing in the dropdown
+can come back as a `403`.
+
+```typescript
+const mine = await client.marketplace.models.listForUser();
+for (const model of mine.data) {
+  console.log(model.id);
+}
+```
+
 ## Rankings API
 
 Access model and app usage rankings:

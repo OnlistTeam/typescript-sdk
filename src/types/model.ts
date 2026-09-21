@@ -66,6 +66,18 @@ export interface ModelDetail {
   providers: ProviderOffer[];
 }
 
+/**
+ * `GET /v1/models/user` — the models one API key can actually call.
+ *
+ * Same entry shape as the public catalog (`client.models.list()`), so `data[]`
+ * carries the OpenAI/OpenRouter model objects, not the paginated marketplace
+ * envelope.
+ */
+export interface UserModelListResponse {
+  object: "list";
+  data: Model[];
+}
+
 /** Paginated list of models. */
 export interface ModelListResponse {
   data: Model[];

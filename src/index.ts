@@ -35,6 +35,7 @@ export type {
   ProviderOffer,
   ModelDetail,
   ModelListResponse,
+  UserModelListResponse,
   Provider,
   ProviderDetail,
   ProviderListResponse,

@@ -4,7 +4,7 @@ import {
   parseResponse,
   type RequestOptions,
 } from "./http.js";
-import type { ModelDetail, ModelListResponse } from "./types/model.js";
+import type { ModelDetail, ModelListResponse, UserModelListResponse } from "./types/model.js";
 import type { ProviderDetail, ProviderListResponse } from "./types/provider.js";
 import type {
   ModelRankingsResponse,
@@ -29,6 +29,25 @@ export class MarketplaceModels {
 
     const resp = await fetchWithRetry(this._opts, `/api/mkt/models?${search}`);
     return (await parseResponse(resp)) as ModelListResponse;
+  }
+
+  /**
+   * List only the models the client's API key can actually call.
+   *
+   * Wraps `GET /v1/models/user` (served at `/api/v1/models/user`). The response
+   * has the same shape as `client.models.list()` — the public catalog — filtered
+   * by the key's model access list, then by the denied providers of its routing
+   * policy, then by its allowed providers. The allowed-provider filter applies
+   * even when the key falls back to every provider once its allowlist is
+   * exhausted: the list states intent, the fallback is a runtime safety net.
+   * `zdr` / `data_collection` are per-request parameters and never narrow it.
+   *
+   * Intended for a program holding one specific key, e.g. the model picker of an
+   * IDE agent. An unauthenticated or unknown key raises `AuthenticationError`.
+   */
+  async listForUser(): Promise<UserModelListResponse> {
+    const resp = await fetchWithRetry(this._opts, "/api/v1/models/user");
+    return (await parseResponse(resp)) as UserModelListResponse;
   }
 
   /** Get detailed info for a specific model, including provider offers. */

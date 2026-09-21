@@ -8,6 +8,7 @@ export type {
   ProviderOffer,
   ModelDetail,
   ModelListResponse,
+  UserModelListResponse,
 } from "./model.js";
 
 export type {
