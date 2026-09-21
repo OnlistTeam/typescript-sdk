@@ -137,7 +137,7 @@ export class AccountGenerations {
    */
   async get(requestId: string): Promise<Generation> {
     const search = new URLSearchParams({ id: requestId });
-    const resp = await fetchWithRetry(this._opts, `/api/v1/generation?${search}`);
+    const resp = await fetchWithRetry(this._opts, `/api/v1/generation?${search.toString()}`);
     return unwrap(await parseResponse(resp)) as Generation;
   }
 }
@@ -168,7 +168,7 @@ export class AccountApiKeys {
     search.set("offset", String(params?.offset ?? 0));
     search.set("include_disabled", String(params?.include_disabled ?? false));
 
-    const resp = await fetchWithRetry(this._opts, `/api/v1/keys?${search}`);
+    const resp = await fetchWithRetry(this._opts, `/api/v1/keys?${search.toString()}`);
     return (unwrap(await parseResponse(resp)) as APIKey[]) ?? [];
   }
 

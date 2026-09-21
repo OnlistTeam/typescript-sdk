@@ -90,7 +90,10 @@ function json(body: unknown, status = 200): Response {
 }
 
 function requestBody(spy: ReturnType<typeof vi.fn>, call = 0): Record<string, unknown> {
-  return JSON.parse((spy.mock.calls[call][1] as RequestInit).body as string);
+  return JSON.parse((spy.mock.calls[call][1] as RequestInit).body as string) as Record<
+    string,
+    unknown
+  >;
 }
 
 describe("Account API", () => {

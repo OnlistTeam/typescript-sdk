@@ -27,7 +27,7 @@ export class MarketplaceModels {
     search.set("offset", String(params?.offset ?? 0));
     if (params?.q) search.set("q", params.q);
 
-    const resp = await fetchWithRetry(this._opts, `/api/mkt/models?${search}`);
+    const resp = await fetchWithRetry(this._opts, `/api/mkt/models?${search.toString()}`);
     return (await parseResponse(resp)) as ModelListResponse;
   }
 
